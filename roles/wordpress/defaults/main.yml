@@ -1,0 +1,4 @@
+---
+data_dir: /var/data/wordpress/
+files_dir: /var/files/wordpress/
+env_file: "{{ files_dir }}/.env"

@@ -1,0 +1,4 @@
+[webservers]
+ws0 ansible_host=192.168.56.10
+ws1 ansible_host=192.168.56.11
+ws2 ansible_host=192.168.56.12

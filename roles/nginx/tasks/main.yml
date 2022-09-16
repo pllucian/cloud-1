@@ -1,0 +1,41 @@
+---
+- name: Copy nginx files
+  copy:
+    src: ./
+    dest: "{{ files_dir }}"
+  notify:
+    - Delete nginx container
+    - Delete nginx image
+
+- name: Copy nginx config
+  template:
+    src: default.j2
+    dest: "{{ files_dir }}/default"
+  notify:
+    - Delete nginx container
+    - Delete nginx image
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Build nginx image
+  docker_image:
+    name: nginx
+    source: build
+    build:
+      path: "{{ files_dir }}"
+
+- name: Run nginx container
+  docker_container:
+    name: nginx
+    image: nginx
+    restart_policy: always
+    env_file: "{{ env_file }}"
+    published_ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - wordpress:/var/www/wordpress/
+      - phpmyadmin:/var/www/phpmyadmin/
+    networks:
+      - name: inception

@@ -1,0 +1,19 @@
+---
+- name: Restart
+  hosts: "{{ target | default('all') }}"
+  become: yes
+  gather_facts: no
+
+  vars:
+    containers:
+      - mariadb
+      - wordpress
+      - phpmyadmin
+      - nginx
+
+  tasks:
+    - name: Restart containers
+      docker_container:
+        name: "{{ item }}"
+        restart: yes
+      loop: "{{ containers }}"

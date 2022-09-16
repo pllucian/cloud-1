@@ -1,0 +1,4 @@
+---
+data_dir: /var/data/mariadb/
+files_dir: /var/files/mariadb/
+env_file: "{{ files_dir }}/.env"

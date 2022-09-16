@@ -1,0 +1,4 @@
+---
+domain_name: pllucian.42.fr
+files_dir: /var/files/nginx/
+env_file: "{{ files_dir }}/.env"

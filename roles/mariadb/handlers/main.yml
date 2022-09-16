@@ -1,0 +1,10 @@
+---
+- name: Delete mariadb container
+  docker_container:
+    name: mariadb
+    state: absent
+
+- name: Delete mariadb image
+  docker_image:
+    name: mariadb
+    state: absent

@@ -1,0 +1,65 @@
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name {{ domain_name }};
+
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl;
+	listen [::]:443 ssl;
+
+	server_name {{ domain_name }};
+
+	root /var/www/wordpress/;
+	index index.php;
+
+	ssl_certificate /etc/ssl/certs/selfsigned.crt;
+	ssl_certificate_key /etc/ssl/private/selfsigned.key;
+	ssl_protocols TLSv1.3;
+
+	location / {
+		autoindex on;
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass wordpress:9000;
+	}
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name pma.{{ domain_name }};
+
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl;
+	listen [::]:443 ssl;
+
+	server_name pma.{{ domain_name }};
+
+	root /var/www/phpmyadmin/;
+	index index.php;
+
+	ssl_certificate /etc/ssl/certs/selfsigned.crt;
+	ssl_certificate_key /etc/ssl/private/selfsigned.key;
+	ssl_protocols TLSv1.3;
+
+	location / {
+		autoindex on;
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass phpmyadmin:9001;
+	}
+}

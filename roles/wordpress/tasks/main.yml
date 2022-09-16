@@ -1,0 +1,44 @@
+---
+- name: Create wordpress data directory
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Create wordpress volume
+  docker_volume:
+    name: wordpress
+    driver_options:
+      type: none
+      o: bind
+      device: "{{ data_dir }}"
+
+- name: Copy wordpress files
+  copy:
+    src: ./
+    dest: "{{ files_dir }}"
+  notify:
+    - Delete wordpress container
+    - Delete wordpress image
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Build wordpress image
+  docker_image:
+    name: wordpress
+    source: build
+    build:
+      path: "{{ files_dir }}"
+
+- name: Run wordpress container
+  docker_container:
+    name: wordpress
+    image: wordpress
+    restart_policy: always
+    env_file: "{{ env_file }}"
+    exposed_ports:
+      - 9000
+    volumes:
+      - wordpress:/var/www/wordpress/
+    networks:
+      - name: inception

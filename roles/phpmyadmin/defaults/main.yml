@@ -1,0 +1,4 @@
+---
+data_dir: /var/data/phpmyadmin/
+files_dir: /var/files/phpmyadmin/
+env_file: "{{ files_dir }}/.env"

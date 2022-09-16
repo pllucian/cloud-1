@@ -1,0 +1,44 @@
+---
+- name: Create mariadb data directory
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Create mariadb volume
+  docker_volume:
+    name: mariadb
+    driver_options:
+      type: none
+      o: bind
+      device: "{{ data_dir }}"
+
+- name: Copy mariadb files
+  copy:
+    src: ./
+    dest: "{{ files_dir }}"
+  notify:
+    - Delete mariadb container
+    - Delete mariadb image
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Build mariadb image
+  docker_image:
+    name: mariadb
+    source: build
+    build:
+      path: "{{ files_dir }}"
+
+- name: Run mariadb container
+  docker_container:
+    name: mariadb
+    image: mariadb
+    restart_policy: always
+    env_file: "{{ env_file }}"
+    exposed_ports:
+      - 3306
+    volumes:
+      - mariadb:/var/lib/mysql/
+    networks:
+      - name: inception

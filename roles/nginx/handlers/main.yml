@@ -1,0 +1,10 @@
+---
+- name: Delete nginx container
+  docker_container:
+    name: nginx
+    state: absent
+
+- name: Delete nginx image
+  docker_image:
+    name: nginx
+    state: absent

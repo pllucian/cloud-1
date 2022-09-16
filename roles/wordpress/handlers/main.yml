@@ -1,0 +1,10 @@
+---
+- name: Delete wordpress container
+  docker_container:
+    name: wordpress
+    state: absent
+
+- name: Delete wordpress image
+  docker_image:
+    name: wordpress
+    state: absent

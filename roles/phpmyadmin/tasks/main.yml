@@ -1,0 +1,44 @@
+---
+- name: Create phpmyadmin data directory
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Create phpmyadmin volume
+  docker_volume:
+    name: phpmyadmin
+    driver_options:
+      type: none
+      o: bind
+      device: "{{ data_dir }}"
+
+- name: Copy phpmyadmin files
+  copy:
+    src: ./
+    dest: "{{ files_dir }}"
+  notify:
+    - Delete phpmyadmin container
+    - Delete phpmyadmin image
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Build phpmyadmin image
+  docker_image:
+    name: phpmyadmin
+    source: build
+    build:
+      path: "{{ files_dir }}"
+
+- name: Run phpmyadmin container
+  docker_container:
+    name: phpmyadmin
+    image: phpmyadmin
+    restart_policy: always
+    env_file: "{{ env_file }}"
+    exposed_ports:
+      - 9001
+    volumes:
+      - phpmyadmin:/var/www/phpmyadmin/
+    networks:
+      - name: inception

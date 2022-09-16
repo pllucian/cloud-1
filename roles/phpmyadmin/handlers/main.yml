@@ -1,0 +1,10 @@
+---
+- name: Delete phpmyadmin container
+  docker_container:
+    name: phpmyadmin
+    state: absent
+
+- name: Delete phpmyadmin image
+  docker_image:
+    name: phpmyadmin
+    state: absent

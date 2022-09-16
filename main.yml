@@ -1,0 +1,11 @@
+---
+- name: Automated deployment of Inception
+  hosts: "{{ target | default('all') }}"
+  become: yes
+
+  roles:
+    - docker
+    - mariadb
+    - wordpress
+    - phpmyadmin
+    - nginx

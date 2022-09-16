@@ -1,0 +1,4 @@
+---
+system: "{{ ansible_system | lower }}"
+distribution: "{{ ansible_distribution | lower }}"
+release: "{{ ansible_distribution_release | lower }}"
